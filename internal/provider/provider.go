@@ -53,10 +53,7 @@ func (p *pterodactylProvider) Schema(_ context.Context, _ provider.SchemaRequest
 			"host": schema.StringAttribute{
 				Optional: true,
 			},
-			"username": schema.StringAttribute{
-				Optional: true,
-			},
-			"password": schema.StringAttribute{
+			"api_key": schema.StringAttribute{
 				Optional:  true,
 				Sensitive: true,
 			},
