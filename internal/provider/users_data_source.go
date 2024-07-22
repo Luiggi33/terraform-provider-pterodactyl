@@ -55,8 +55,53 @@ func (d *usersDataSource) Metadata(_ context.Context, req datasource.MetadataReq
 // Schema defines the schema for the data source.
 func (d *usersDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Attributes: map[string]schema.Attribute{},
+		Attributes: map[string]schema.Attribute{
+			"users": schema.ListNestedAttribute{
+				Computed: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"id": schema.Int64Attribute{
+							Computed: true,
+						},
+						"external_id": schema.StringAttribute{
+							Computed: true,
+						},
+						"uuid": schema.StringAttribute{
+							Computed: true,
+						},
+						"username": schema.StringAttribute{
+							Computed: true,
+						},
+						"email": schema.StringAttribute{
+							Computed: true,
+						},
+						"first_name": schema.StringAttribute{
+							Computed: true,
+						},
+						"last_name": schema.StringAttribute{
+							Computed: true,
+						},
+						"language": schema.StringAttribute{
+							Computed: true,
+						},
+						"root_admin": schema.BoolAttribute{
+							Computed: true,
+						},
+						"is_2fa": schema.BoolAttribute{
+							Computed: true,
+						},
+						"created_at": schema.StringAttribute{
+							Computed: true,
+						},
+						"updated_at": schema.StringAttribute{
+							Computed: true,
+						},
+					},
+				},
+			},
+		},
 	}
+
 }
 
 // Read refreshes the Terraform state with the latest data.
