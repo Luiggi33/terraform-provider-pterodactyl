@@ -33,27 +33,27 @@ type usersDataSourceModel struct {
 
 // Users schema data.
 type User struct {
-	ID         int       `json:"id"`
-	ExternalID string    `json:"external_id"`
-	UUID       string    `json:"uuid"`
-	Username   string    `json:"username"`
-	Email      string    `json:"email"`
-	FirstName  string    `json:"first_name"`
-	LastName   string    `json:"last_name"`
-	Language   string    `json:"language"`
-	RootAdmin  bool      `json:"root_admin"`
-	Is2FA      bool      `json:"2fa"`
-	CreatedAt  time.Time `json:"created_at"`
-	UpdatedAt  time.Time `json:"updated_at"`
+	ID         int    `tfsdk:"id"`
+	ExternalID string `tfsdk:"external_id"`
+	UUID       string `tfsdk:"uuid"`
+	Username   string `tfsdk:"username"`
+	Email      string `tfsdk:"email"`
+	FirstName  string `tfsdk:"first_name"`
+	LastName   string `tfsdk:"last_name"`
+	Language   string `tfsdk:"language"`
+	RootAdmin  bool   `tfsdk:"root_admin"`
+	Is2FA      bool   `tfsdk:"is_2fa"`
+	CreatedAt  string `tfsdk:"created_at"`
+	UpdatedAt  string `tfsdk:"updated_at"`
 }
 
 // Metadata returns the data source type name.
-func (d *usersDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+func (d *usersDataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_users"
 }
 
 // Schema defines the schema for the data source.
-func (d *usersDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+func (d *usersDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			"users": schema.ListNestedAttribute{
@@ -101,7 +101,6 @@ func (d *usersDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 			},
 		},
 	}
-
 }
 
 // Read refreshes the Terraform state with the latest data.
@@ -130,8 +129,8 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			Language:   user.Language,
 			RootAdmin:  user.RootAdmin,
 			Is2FA:      user.Is2FA,
-			CreatedAt:  user.CreatedAt,
-			UpdatedAt:  user.UpdatedAt,
+			CreatedAt:  user.CreatedAt.Format(time.RFC3339),
+			UpdatedAt:  user.UpdatedAt.Format(time.RFC3339),
 		}
 
 		state.Users = append(state.Users, userState)
@@ -146,7 +145,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 }
 
 // Configure adds the provider configured client to the data source.
-func (d *usersDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
+func (d *usersDataSource) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
 	// Add a nil check when handling ProviderData because Terraform
 	// sets that data after it calls the ConfigureProvider RPC.
 	if req.ProviderData == nil {
