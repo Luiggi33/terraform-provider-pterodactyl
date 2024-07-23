@@ -108,7 +108,6 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	var state usersDataSourceModel
 
 	users, err := d.client.GetUsers()
-	fmt.Println(users)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Read Pterodactyl Users",
@@ -133,9 +132,6 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			CreatedAt:  user.CreatedAt.Format(time.RFC3339),
 			UpdatedAt:  user.UpdatedAt.Format(time.RFC3339),
 		}
-
-		fmt.Println(userState)
-		fmt.Println(user)
 
 		state.Users = append(state.Users, userState)
 	}
