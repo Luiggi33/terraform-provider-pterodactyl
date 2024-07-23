@@ -11,6 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 // Ensure the implementation satisfies the expected interfaces.
@@ -62,6 +63,8 @@ func (p *pterodactylProvider) Schema(_ context.Context, _ provider.SchemaRequest
 }
 
 func (p *pterodactylProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
+	tflog.Info(ctx, "Configuring Pterodactyl Provider")
+
 	// Retrieve provider data from configuration
 	var config pterodactylProviderModel
 	diags := req.Config.Get(ctx, &config)
@@ -136,6 +139,12 @@ func (p *pterodactylProvider) Configure(ctx context.Context, req provider.Config
 		return
 	}
 
+	ctx = tflog.SetField(ctx, "pterodactyl_host", host)
+	ctx = tflog.SetField(ctx, "pterodactyl_api_key", apiKey)
+	ctx = tflog.MaskFieldValuesWithFieldKeys(ctx, "pterodactyl_api_key")
+
+	tflog.Debug(ctx, "Creating Pterodactyl client")
+
 	// Create a new Pterodactyl client using the configuration values
 	client, err := pterodactyl.NewClient(&host, &apiKey)
 	if err != nil {
@@ -152,6 +161,8 @@ func (p *pterodactylProvider) Configure(ctx context.Context, req provider.Config
 	// type Configure methods.
 	resp.DataSourceData = client
 	resp.ResourceData = client
+
+	tflog.Info(ctx, "Pterodactyl client created")
 }
 
 // DataSources defines the data sources implemented in the provider.
