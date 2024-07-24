@@ -4,10 +4,10 @@ github.com/BurntSushi/toml v1.2.1 h1:9F2/+DoOYIOksmaJFPw1tGFy1eDnIJXg+UHjuD8lTak
 github.com/BurntSushi/toml v1.2.1/go.mod h1:CxXYINrC8qIiEnFrOxCa7Jy5BFHlXnUU2pbicEuybxQ=
 github.com/Kunde21/markdownfmt/v3 v3.1.0 h1:KiZu9LKs+wFFBQKhrZJrFZwtLnCCWJahL+S+E/3VnM0=
 github.com/Kunde21/markdownfmt/v3 v3.1.0/go.mod h1:tPXN1RTyOzJwhfHoon9wUr4HGYmWgVxSQN6VBJDkrVc=
-github.com/Luiggi33/pterodactyl-client-go v0.0.0-20240723152902-7390b3f7a26b h1:diOQ6Jl6aEJD2gVsHUzSKBE86M4asudhVVNIVs/iTes=
-github.com/Luiggi33/pterodactyl-client-go v0.0.0-20240723152902-7390b3f7a26b/go.mod h1:lGesDuNHKaPCdArSZw3t3OIkVyIaj0H5nYEONXBJXVk=
 github.com/Luiggi33/pterodactyl-client-go v0.0.0-20240723160223-c0e87f6fef80 h1:8g1PD+2R/j1y/sIOtTYjOzME2aA1qHAiWn0jg2YsuYs=
 github.com/Luiggi33/pterodactyl-client-go v0.0.0-20240723160223-c0e87f6fef80/go.mod h1:lGesDuNHKaPCdArSZw3t3OIkVyIaj0H5nYEONXBJXVk=
+github.com/Luiggi33/pterodactyl-client-go v0.0.0-20240723195106-decd7e549942 h1:d6uAdWjCMHgARClnwnloc0xIdsOImqiDHvvuyAHQQFI=
+github.com/Luiggi33/pterodactyl-client-go v0.0.0-20240723195106-decd7e549942/go.mod h1:lGesDuNHKaPCdArSZw3t3OIkVyIaj0H5nYEONXBJXVk=
 github.com/Masterminds/goutils v1.1.1 h1:5nUrii3FMTL5diU80unEVvNevw1nH4+ZV4DSLVJLSYI=
 github.com/Masterminds/goutils v1.1.1/go.mod h1:8cTjp+g8YejhMuvIA5y2vz3BpJxksy863GQaJW2MFNU=
 github.com/Masterminds/semver/v3 v3.2.0 h1:3MEsd0SM6jqZojhjLWWeBY+Kcjy9i6MQAeY7YgDP83g=
@@ -227,6 +227,8 @@ golang.org/x/tools v0.21.1-0.20240508182429-e35e4ccd0d2d/go.mod h1:aiJjzUbINMkxb
 golang.org/x/xerrors v0.0.0-20190717185122-a985d3407aa7/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
 google.golang.org/genproto/googleapis/rpc v0.0.0-20240722135656-d784300faade h1:oCRSWfwGXQsqlVdErcyTt4A93Y8fo0/9D4b1gnI++qo=
 google.golang.org/genproto/googleapis/rpc v0.0.0-20240722135656-d784300faade/go.mod h1:Ue6ibwXGpU+dqIcODieyLOcgj7z8+IcskoNIgZxtrFY=
+google.golang.org/genproto/googleapis/rpc v0.0.0-20240723171418-e6d459c13d2a h1:hqK4+jJZXCU4pW7jsAdGOVFIfLHQeV7LaizZKnZ84HI=
+google.golang.org/genproto/googleapis/rpc v0.0.0-20240723171418-e6d459c13d2a/go.mod h1:Ue6ibwXGpU+dqIcODieyLOcgj7z8+IcskoNIgZxtrFY=
 google.golang.org/grpc v1.65.0 h1:bs/cUb4lp1G5iImFFd3u5ixQzweKizoZJAwBNLR42lc=
 google.golang.org/grpc v1.65.0/go.mod h1:WgYC2ypjlB0EiQi6wdKixMqukr6lBc0Vo+oOgjrM5ZQ=
 google.golang.org/protobuf v1.34.2 h1:6xV6lTsCfpGD21XK49h7MhtcApnLqkfYgPcdHftf6hg=

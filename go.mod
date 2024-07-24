@@ -3,7 +3,7 @@ module terraform-provider-pterodactyl
 go 1.21
 
 require (
-	github.com/Luiggi33/pterodactyl-client-go v0.0.0-20240723160223-c0e87f6fef80
+	github.com/Luiggi33/pterodactyl-client-go v0.0.0-20240723195106-decd7e549942
 	github.com/hashicorp/terraform-plugin-docs v0.19.4
 	github.com/hashicorp/terraform-plugin-framework v1.10.0
 	github.com/hashicorp/terraform-plugin-log v0.9.0
@@ -64,7 +64,7 @@ require (
 	golang.org/x/net v0.27.0 // indirect
 	golang.org/x/sys v0.22.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240722135656-d784300faade // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240723171418-e6d459c13d2a // indirect
 	google.golang.org/grpc v1.65.0 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
