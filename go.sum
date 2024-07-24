@@ -4,8 +4,6 @@ github.com/BurntSushi/toml v1.2.1 h1:9F2/+DoOYIOksmaJFPw1tGFy1eDnIJXg+UHjuD8lTak
 github.com/BurntSushi/toml v1.2.1/go.mod h1:CxXYINrC8qIiEnFrOxCa7Jy5BFHlXnUU2pbicEuybxQ=
 github.com/Kunde21/markdownfmt/v3 v3.1.0 h1:KiZu9LKs+wFFBQKhrZJrFZwtLnCCWJahL+S+E/3VnM0=
 github.com/Kunde21/markdownfmt/v3 v3.1.0/go.mod h1:tPXN1RTyOzJwhfHoon9wUr4HGYmWgVxSQN6VBJDkrVc=
-github.com/Luiggi33/pterodactyl-client-go v0.0.0-20240723195106-decd7e549942 h1:d6uAdWjCMHgARClnwnloc0xIdsOImqiDHvvuyAHQQFI=
-github.com/Luiggi33/pterodactyl-client-go v0.0.0-20240723195106-decd7e549942/go.mod h1:lGesDuNHKaPCdArSZw3t3OIkVyIaj0H5nYEONXBJXVk=
 github.com/Luiggi33/pterodactyl-client-go v0.0.0-20240724052502-aab4042020e2 h1:oRnfqBY7wKTuYoAXwu9XpP+1x/dMZm82OjcYAPEg+RY=
 github.com/Luiggi33/pterodactyl-client-go v0.0.0-20240724052502-aab4042020e2/go.mod h1:lGesDuNHKaPCdArSZw3t3OIkVyIaj0H5nYEONXBJXVk=
 github.com/Masterminds/goutils v1.1.1 h1:5nUrii3FMTL5diU80unEVvNevw1nH4+ZV4DSLVJLSYI=
