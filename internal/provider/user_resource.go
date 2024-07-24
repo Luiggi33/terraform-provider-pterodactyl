@@ -91,7 +91,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		LastName:  plan.LastName.ValueString(),
 	}
 
-	// Create new order
+	// Create new user
 	user, err := r.client.CreateUser(partialUser)
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -104,7 +104,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	// Map response body to schema and populate Computed attribute values
 	plan.ID = types.Int64Value(int64(user.ID))
 	plan.CreatedAt = types.StringValue(user.CreatedAt.Format(time.RFC3339))
-	plan.CreatedAt = types.StringValue(time.Now().Format(time.RFC3339))
+	plan.UpdatedAt = types.StringValue(time.Now().Format(time.RFC3339))
 
 	// Set state to fully populated data
 	diags = resp.State.Set(ctx, plan)
