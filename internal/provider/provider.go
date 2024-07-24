@@ -175,5 +175,7 @@ func (p *pterodactylProvider) DataSources(_ context.Context) []func() datasource
 
 // Resources defines the resources implemented in the provider.
 func (p *pterodactylProvider) Resources(_ context.Context) []func() resource.Resource {
-	return nil
+	return []func() resource.Resource{
+		NewUserResource,
+	}
 }
