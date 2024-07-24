@@ -136,13 +136,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	var state userDataSourceModel
 
 	// Get the attributes from the request
-	var target struct {
-		ID         int    `tfsdk:"id"`
-		ExternalID string `tfsdk:"external_id"`
-		Username   string `tfsdk:"username"`
-		Email      string `tfsdk:"email"`
-	}
-	diags := req.Config.Get(ctx, &target)
+	diags := req.Config.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -151,14 +145,14 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	// Fetch the user from the API based on the provided attribute
 	var user pterodactyl.User
 	var err error
-	if target.ID != 0 {
-		user, err = d.client.GetUser(target.ID)
-	} else if target.Username != "" {
-		user, err = d.client.GetUserUsername(target.Username)
-	} else if target.Email != "" {
-		user, err = d.client.GetUserEmail(target.Email)
-	} else if target.ExternalID != "" {
-		user, err = d.client.GetUserExternalID(target.ExternalID)
+	if state.ID != 0 {
+		user, err = d.client.GetUser(state.ID)
+	} else if state.Username != "" {
+		user, err = d.client.GetUserUsername(state.Username)
+	} else if state.Email != "" {
+		user, err = d.client.GetUserEmail(state.Email)
+	} else if state.ExternalID != "" {
+		user, err = d.client.GetUserExternalID(state.ExternalID)
 	} else {
 		resp.Diagnostics.AddError(
 			"Missing Attribute",
