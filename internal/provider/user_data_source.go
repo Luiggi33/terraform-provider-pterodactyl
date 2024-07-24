@@ -6,8 +6,12 @@ import (
 	"time"
 
 	"github.com/Luiggi33/pterodactyl-client-go"
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
 // Ensure the implementation satisfies the expected interfaces.
@@ -52,16 +56,76 @@ func (d *userDataSource) Schema(ctx context.Context, req datasource.SchemaReques
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
-				Description: "The ID of the user.",
-				Optional:    true,
+				Optional: true,
+				Computed: true,
+				Validators: []validator.Int64{
+					int64validator.ExactlyOneOf(
+						path.MatchRoot("id"),
+						path.MatchRoot("external_id"),
+						path.MatchRoot("username"),
+						path.MatchRoot("email"),
+					),
+				},
+			},
+			"external_id": schema.StringAttribute{
+				Optional: true,
+				Computed: true,
+				Validators: []validator.String{
+					stringvalidator.ExactlyOneOf(
+						path.MatchRoot("id"),
+						path.MatchRoot("external_id"),
+						path.MatchRoot("username"),
+						path.MatchRoot("email"),
+					),
+				},
+			},
+			"uuid": schema.StringAttribute{
+				Computed: true,
 			},
 			"username": schema.StringAttribute{
-				Description: "The username of the user.",
-				Optional:    true,
+				Optional: true,
+				Computed: true,
+				Validators: []validator.String{
+					stringvalidator.ExactlyOneOf(
+						path.MatchRoot("id"),
+						path.MatchRoot("external_id"),
+						path.MatchRoot("username"),
+						path.MatchRoot("email"),
+					),
+				},
 			},
 			"email": schema.StringAttribute{
-				Description: "The email of the user.",
-				Optional:    true,
+				Optional: true,
+				Computed: true,
+				Validators: []validator.String{
+					stringvalidator.ExactlyOneOf(
+						path.MatchRoot("id"),
+						path.MatchRoot("external_id"),
+						path.MatchRoot("username"),
+						path.MatchRoot("email"),
+					),
+				},
+			},
+			"first_name": schema.StringAttribute{
+				Computed: true,
+			},
+			"last_name": schema.StringAttribute{
+				Computed: true,
+			},
+			"language": schema.StringAttribute{
+				Computed: true,
+			},
+			"root_admin": schema.BoolAttribute{
+				Computed: true,
+			},
+			"is_2fa": schema.BoolAttribute{
+				Computed: true,
+			},
+			"created_at": schema.StringAttribute{
+				Computed: true,
+			},
+			"updated_at": schema.StringAttribute{
+				Computed: true,
 			},
 		},
 	}
@@ -73,9 +137,10 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 
 	// Get the attributes from the request
 	var target struct {
-		ID       int    `tfsdk:"id"`
-		Username string `tfsdk:"username"`
-		Email    string `tfsdk:"email"`
+		ID         int    `tfsdk:"id"`
+		ExternalID string `tfsdk:"external_id"`
+		Username   string `tfsdk:"username"`
+		Email      string `tfsdk:"email"`
 	}
 	diags := req.Config.Get(ctx, &target)
 	resp.Diagnostics.Append(diags...)
@@ -92,6 +157,8 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		user, err = d.client.GetUserUsername(target.Username)
 	} else if target.Email != "" {
 		user, err = d.client.GetUserEmail(target.Email)
+	} else if target.ExternalID != "" {
+		user, err = d.client.GetUserExternalID(target.ExternalID)
 	} else {
 		resp.Diagnostics.AddError(
 			"Missing Attribute",
