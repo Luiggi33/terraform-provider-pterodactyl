@@ -12,6 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 // Ensure the implementation satisfies the expected interfaces.
@@ -22,18 +23,18 @@ var (
 
 // userDataSourceModel maps the data source schema data.
 type userDataSourceModel struct {
-	ID         int    `tfsdk:"id"`
-	ExternalID string `tfsdk:"external_id"`
-	UUID       string `tfsdk:"uuid"`
-	Username   string `tfsdk:"username"`
-	Email      string `tfsdk:"email"`
-	FirstName  string `tfsdk:"first_name"`
-	LastName   string `tfsdk:"last_name"`
-	Language   string `tfsdk:"language"`
-	RootAdmin  bool   `tfsdk:"root_admin"`
-	Is2FA      bool   `tfsdk:"is_2fa"`
-	CreatedAt  string `tfsdk:"created_at"`
-	UpdatedAt  string `tfsdk:"updated_at"`
+	ID         types.Int64  `tfsdk:"id"`
+	ExternalID types.String `tfsdk:"external_id"`
+	UUID       types.String `tfsdk:"uuid"`
+	Username   types.String `tfsdk:"username"`
+	Email      types.String `tfsdk:"email"`
+	FirstName  types.String `tfsdk:"first_name"`
+	LastName   types.String `tfsdk:"last_name"`
+	Language   types.String `tfsdk:"language"`
+	RootAdmin  types.Bool   `tfsdk:"root_admin"`
+	Is2FA      types.Bool   `tfsdk:"is_2fa"`
+	CreatedAt  types.String `tfsdk:"created_at"`
+	UpdatedAt  types.String `tfsdk:"updated_at"`
 }
 
 // NewUserDataSource is a helper function to simplify the provider implementation.
@@ -145,14 +146,14 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	// Fetch the user from the API based on the provided attribute
 	var user pterodactyl.User
 	var err error
-	if state.ID != 0 {
-		user, err = d.client.GetUser(state.ID)
-	} else if state.Username != "" {
-		user, err = d.client.GetUserUsername(state.Username)
-	} else if state.Email != "" {
-		user, err = d.client.GetUserEmail(state.Email)
-	} else if state.ExternalID != "" {
-		user, err = d.client.GetUserExternalID(state.ExternalID)
+	if !state.ID.IsNull() {
+		user, err = d.client.GetUser(int(state.ID.ValueInt64()))
+	} else if !state.Username.IsNull() {
+		user, err = d.client.GetUserUsername(state.Username.ValueString())
+	} else if !state.Email.IsNull() {
+		user, err = d.client.GetUserEmail(state.Email.ValueString())
+	} else if !state.ExternalID.IsNull() {
+		user, err = d.client.GetUserExternalID(state.ExternalID.ValueString())
 	} else {
 		resp.Diagnostics.AddError(
 			"Missing Attribute",
@@ -171,18 +172,18 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 
 	// Map response body to model
 	state = userDataSourceModel{
-		ID:         user.ID,
-		ExternalID: user.ExternalID,
-		UUID:       user.UUID,
-		Username:   user.Username,
-		Email:      user.Email,
-		FirstName:  user.FirstName,
-		LastName:   user.LastName,
-		Language:   user.Language,
-		RootAdmin:  user.RootAdmin,
-		Is2FA:      user.Is2FA,
-		CreatedAt:  user.CreatedAt.Format(time.RFC3339),
-		UpdatedAt:  user.UpdatedAt.Format(time.RFC3339),
+		ID:         types.Int64Value(int64(user.ID)),
+		ExternalID: types.StringValue(user.ExternalID),
+		UUID:       types.StringValue(user.UUID),
+		Username:   types.StringValue(user.Username),
+		Email:      types.StringValue(user.Email),
+		FirstName:  types.StringValue(user.FirstName),
+		LastName:   types.StringValue(user.LastName),
+		Language:   types.StringValue(user.Language),
+		RootAdmin:  types.BoolValue(user.RootAdmin),
+		Is2FA:      types.BoolValue(user.Is2FA),
+		CreatedAt:  types.StringValue(user.CreatedAt.Format(time.RFC3339)),
+		UpdatedAt:  types.StringValue(user.UpdatedAt.Format(time.RFC3339)),
 	}
 
 	// Set state
