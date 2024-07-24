@@ -48,7 +48,7 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
-				Required: true,
+				Computed: true,
 			},
 			"username": schema.StringAttribute{
 				Required: true,
