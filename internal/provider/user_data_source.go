@@ -44,7 +44,7 @@ type userDataSource struct {
 
 // Metadata returns the data source type name.
 func (d *userDataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = "user"
+	resp.TypeName = req.ProviderTypeName + "_user"
 }
 
 // Schema defines the schema for the data source.
@@ -63,7 +63,6 @@ func (d *userDataSource) Schema(ctx context.Context, req datasource.SchemaReques
 				Description: "The email of the user.",
 				Optional:    true,
 			},
-			// Add other attributes as needed
 		},
 	}
 }
