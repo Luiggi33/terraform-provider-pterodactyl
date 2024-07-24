@@ -9,6 +9,7 @@ import (
 	"github.com/Luiggi33/pterodactyl-client-go"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 // Ensure the implementation satisfies the expected interfaces.
@@ -29,13 +30,13 @@ type userResource struct {
 
 // userResourceModel maps the resource schema data.
 type userResourceModel struct {
-	ID        int    `tfsdk:"id"`
-	Username  string `tfsdk:"username"`
-	Email     string `tfsdk:"email"`
-	FirstName string `tfsdk:"first_name"`
-	LastName  string `tfsdk:"last_name"`
-	CreatedAt string `tfsdk:"created_at"`
-	UpdatedAt string `tfsdk:"updated_at"`
+	ID        types.Int64  `tfsdk:"id"`
+	Username  types.String `tfsdk:"username"`
+	Email     types.String `tfsdk:"email"`
+	FirstName types.String `tfsdk:"first_name"`
+	LastName  types.String `tfsdk:"last_name"`
+	CreatedAt types.String `tfsdk:"created_at"`
+	UpdatedAt types.String `tfsdk:"updated_at"`
 }
 
 // Metadata returns the resource type name.
@@ -84,10 +85,10 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	// Create partial user
 	partialUser := pterodactyl.PartialUser{
-		Username:  plan.Username,
-		Email:     plan.Email,
-		FirstName: plan.FirstName,
-		LastName:  plan.LastName,
+		Username:  plan.Username.ValueString(),
+		Email:     plan.Email.ValueString(),
+		FirstName: plan.FirstName.ValueString(),
+		LastName:  plan.LastName.ValueString(),
 	}
 
 	// Create new order
@@ -101,9 +102,9 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	}
 
 	// Map response body to schema and populate Computed attribute values
-	plan.ID = user.ID
-	plan.CreatedAt = user.CreatedAt.Format(time.RFC3339)
-	plan.CreatedAt = time.Now().Format(time.RFC3339)
+	plan.ID = types.Int64Value(int64(user.ID))
+	plan.CreatedAt = types.StringValue(user.CreatedAt.Format(time.RFC3339))
+	plan.CreatedAt = types.StringValue(time.Now().Format(time.RFC3339))
 
 	// Set state to fully populated data
 	diags = resp.State.Set(ctx, plan)
@@ -124,21 +125,21 @@ func (r *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	}
 
 	// Get refreshed user value from Pterodactyl
-	user, err := r.client.GetUser(state.ID)
+	user, err := r.client.GetUser(int(state.ID.ValueInt64()))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Reading Pterodactyl User",
-			"Could not read Pterodactyl user ID "+strconv.Itoa(state.ID)+": "+err.Error(),
+			"Could not read Pterodactyl user ID "+strconv.FormatInt(state.ID.ValueInt64(), 10)+": "+err.Error(),
 		)
 		return
 	}
 
 	// Overwrite items with refreshed state
-	state.Email = user.Email
-	state.FirstName = user.FirstName
-	state.LastName = user.LastName
-	state.UpdatedAt = user.UpdatedAt.Format(time.RFC3339)
-	state.CreatedAt = user.CreatedAt.Format(time.RFC3339)
+	state.Email = types.StringValue(user.Email)
+	state.FirstName = types.StringValue(user.FirstName)
+	state.LastName = types.StringValue(user.LastName)
+	state.UpdatedAt = types.StringValue(user.UpdatedAt.Format(time.RFC3339))
+	state.CreatedAt = types.StringValue(user.CreatedAt.Format(time.RFC3339))
 
 	// Set refreshed state
 	diags = resp.State.Set(ctx, &state)
