@@ -169,6 +169,7 @@ func (p *pterodactylProvider) Configure(ctx context.Context, req provider.Config
 func (p *pterodactylProvider) DataSources(_ context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		NewUsersDataSource,
+		NewUserDataSource,
 	}
 }
 
