@@ -9,6 +9,9 @@ import (
 	"github.com/Luiggi33/pterodactyl-client-go"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -50,6 +53,9 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Computed: true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
 			},
 			"username": schema.StringAttribute{
 				Required: true,
@@ -65,6 +71,9 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"created_at": schema.StringAttribute{
 				Computed: true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"updated_at": schema.StringAttribute{
 				Computed: true,
@@ -149,8 +158,44 @@ func (r *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	}
 }
 
-// Update updates the resource and sets the updated Terraform state on success.
 func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	// Retrieve values from plan
+	var plan userResourceModel
+	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Create partial user
+	var partialUser pterodactyl.PartialUser = pterodactyl.PartialUser{
+		Username:  plan.Username.ValueString(),
+		Email:     plan.Email.ValueString(),
+		FirstName: plan.FirstName.ValueString(),
+		LastName:  plan.LastName.ValueString(),
+	}
+
+	// Update existing user
+	user, err := r.client.UpdateUser(int(plan.ID.ValueInt64()), partialUser)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error Updating Pterodactyl User",
+			"Could not update user, unexpected error: "+err.Error(),
+		)
+		return
+	}
+
+	// Update resource state with updated values
+	plan.Email = types.StringValue(user.Email)
+	plan.FirstName = types.StringValue(user.FirstName)
+	plan.LastName = types.StringValue(user.LastName)
+	plan.UpdatedAt = types.StringValue(user.UpdatedAt.Format(time.RFC3339))
+
+	diags = resp.State.Set(ctx, plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 }
 
 // Delete deletes the resource and removes the Terraform state on success.
