@@ -200,6 +200,23 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 
 // Delete deletes the resource and removes the Terraform state on success.
 func (r *userResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	// Retrieve values from state
+	var state userResourceModel
+	diags := req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Delete existing user
+	err := r.client.DeleteUser(int(state.ID.ValueInt64()))
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error Deleting Pterodactyl User",
+			"Could not delete user, unexpected error: "+err.Error(),
+		)
+		return
+	}
 }
 
 // Configure adds the provider configured client to the resource.
