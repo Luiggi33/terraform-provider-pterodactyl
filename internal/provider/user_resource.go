@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/Luiggi33/pterodactyl-client-go"
-	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
@@ -244,6 +243,32 @@ func (r *userResource) Configure(_ context.Context, req resource.ConfigureReques
 }
 
 func (r *userResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	// Retrieve import ID and save to id attribute
-	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
+	username := req.ID
+
+	user, err := r.client.GetUserUsername(username)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error Importing Pterodactyl User",
+			"Could not import user: "+err.Error(),
+		)
+		return
+	}
+
+	// Map response body to schema and populate Computed attribute values
+	state := userResourceModel{
+		ID:        types.Int64Value(int64(user.ID)),
+		Username:  types.StringValue(user.Username),
+		Email:     types.StringValue(user.Email),
+		FirstName: types.StringValue(user.FirstName),
+		LastName:  types.StringValue(user.LastName),
+		CreatedAt: types.StringValue(user.CreatedAt.Format(time.RFC3339)),
+		UpdatedAt: types.StringValue(user.UpdatedAt.Format(time.RFC3339)),
+	}
+
+	// Set state to fully populated data
+	diags := resp.State.Set(ctx, state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 }
