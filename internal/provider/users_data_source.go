@@ -56,46 +56,60 @@ func (d *usersDataSource) Metadata(ctx context.Context, req datasource.MetadataR
 // Schema defines the schema for the data source.
 func (d *usersDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
+		Description: "The Pterodactyl users data source allows Terraform to read user data from the Pterodactyl Panel API.",
 		Attributes: map[string]schema.Attribute{
 			"users": schema.ListNestedAttribute{
-				Computed: true,
+				Description: "The list of users.",
+				Computed:    true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
 						"id": schema.Int64Attribute{
-							Computed: true,
+							Description: "The ID of the user.",
+							Computed:    true,
 						},
 						"external_id": schema.StringAttribute{
-							Computed: true,
+							Description: "The external ID of the user.",
+							Computed:    true,
 						},
 						"uuid": schema.StringAttribute{
-							Computed: true,
+							Description: "The UUID of the user.",
+							Computed:    true,
 						},
 						"username": schema.StringAttribute{
-							Computed: true,
+							Description: "The username of the user.",
+							Computed:    true,
 						},
 						"email": schema.StringAttribute{
-							Computed: true,
+							Description: "The email of the user.",
+							Computed:    true,
 						},
 						"first_name": schema.StringAttribute{
-							Computed: true,
+							Description: "The first name of the user.",
+							Computed:    true,
 						},
 						"last_name": schema.StringAttribute{
-							Computed: true,
+							Description: "The last name of the user.",
+							Computed:    true,
 						},
 						"language": schema.StringAttribute{
-							Computed: true,
+							Description: "The language of the user.",
+							Computed:    true,
 						},
 						"root_admin": schema.BoolAttribute{
-							Computed: true,
+							Description: "Is the user the root admin.",
+							Computed:    true,
 						},
 						"is_2fa": schema.BoolAttribute{
-							Computed: true,
+							Description: "Is the user using 2FA.",
+							Computed:    true,
 						},
 						"created_at": schema.StringAttribute{
-							Computed: true,
+							Description: "The creation date of the user.",
+							Computed:    true,
 						},
 						"updated_at": schema.StringAttribute{
-							Computed: true,
+							Description: "The last update date of the user.",
+							Computed:    true,
 						},
 					},
 				},

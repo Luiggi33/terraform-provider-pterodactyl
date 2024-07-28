@@ -51,33 +51,41 @@ func (r *userResource) Metadata(_ context.Context, req resource.MetadataRequest,
 // Schema defines the schema for the resource.
 func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
+		Description: "The Pterodactyl user resource allows Terraform to manage users in the Pterodactyl Panel API.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
-				Computed: true,
+				Description: "The ID of the user.",
+				Computed:    true,
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
 			"username": schema.StringAttribute{
-				Required: true,
+				Description: "The username of the user.",
+				Required:    true,
 			},
 			"email": schema.StringAttribute{
-				Required: true,
+				Description: "The email of the user.",
+				Required:    true,
 			},
 			"first_name": schema.StringAttribute{
-				Required: true,
+				Description: "The first name of the user.",
+				Required:    true,
 			},
 			"last_name": schema.StringAttribute{
-				Required: true,
+				Description: "The last name of the user.",
+				Required:    true,
 			},
 			"created_at": schema.StringAttribute{
-				Computed: true,
+				Description: "The creation date of the user.",
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"updated_at": schema.StringAttribute{
-				Computed: true,
+				Description: "The last update date of the user.",
+				Computed:    true,
 			},
 		},
 	}

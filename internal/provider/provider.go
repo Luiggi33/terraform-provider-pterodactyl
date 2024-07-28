@@ -50,13 +50,16 @@ func (p *pterodactylProvider) Metadata(_ context.Context, _ provider.MetadataReq
 // Schema defines the provider-level schema for configuration data.
 func (p *pterodactylProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
+		Description: "The Pterodactyl provider allows Terraform to interact with the Pterodactyl Panel API.",
 		Attributes: map[string]schema.Attribute{
 			"host": schema.StringAttribute{
-				Optional: true,
+				Description: "The Pterodactyl Panel host URL.",
+				Optional:    true,
 			},
 			"api_key": schema.StringAttribute{
-				Optional:  true,
-				Sensitive: true,
+				Description: "The Pterodactyl Panel API key.",
+				Optional:    true,
+				Sensitive:   true,
 			},
 		},
 	}

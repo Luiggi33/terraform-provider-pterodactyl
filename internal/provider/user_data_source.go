@@ -55,10 +55,12 @@ func (d *userDataSource) Metadata(ctx context.Context, req datasource.MetadataRe
 // Schema defines the schema for the data source.
 func (d *userDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
+		Description: "The Pterodactyl user data source allows Terraform to read user data from the Pterodactyl Panel API.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
-				Optional: true,
-				Computed: true,
+				Description: "The ID of the user.",
+				Optional:    true,
+				Computed:    true,
 				Validators: []validator.Int64{
 					int64validator.ExactlyOneOf(
 						path.MatchRoot("id"),
@@ -69,8 +71,9 @@ func (d *userDataSource) Schema(ctx context.Context, req datasource.SchemaReques
 				},
 			},
 			"external_id": schema.StringAttribute{
-				Optional: true,
-				Computed: true,
+				Description: "The external ID of the user.",
+				Optional:    true,
+				Computed:    true,
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(
 						path.MatchRoot("id"),
@@ -81,11 +84,13 @@ func (d *userDataSource) Schema(ctx context.Context, req datasource.SchemaReques
 				},
 			},
 			"uuid": schema.StringAttribute{
-				Computed: true,
+				Description: "The UUID of the user.",
+				Computed:    true,
 			},
 			"username": schema.StringAttribute{
-				Optional: true,
-				Computed: true,
+				Description: "The username of the user.",
+				Optional:    true,
+				Computed:    true,
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(
 						path.MatchRoot("id"),
@@ -96,8 +101,9 @@ func (d *userDataSource) Schema(ctx context.Context, req datasource.SchemaReques
 				},
 			},
 			"email": schema.StringAttribute{
-				Optional: true,
-				Computed: true,
+				Description: "The email of the user.",
+				Optional:    true,
+				Computed:    true,
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(
 						path.MatchRoot("id"),
@@ -108,25 +114,32 @@ func (d *userDataSource) Schema(ctx context.Context, req datasource.SchemaReques
 				},
 			},
 			"first_name": schema.StringAttribute{
-				Computed: true,
+				Description: "The first name of the user.",
+				Computed:    true,
 			},
 			"last_name": schema.StringAttribute{
-				Computed: true,
+				Description: "The last name of the user.",
+				Computed:    true,
 			},
 			"language": schema.StringAttribute{
-				Computed: true,
+				Description: "The language of the user.",
+				Computed:    true,
 			},
 			"root_admin": schema.BoolAttribute{
-				Computed: true,
+				Description: "Is the user the root admin.",
+				Computed:    true,
 			},
 			"is_2fa": schema.BoolAttribute{
-				Computed: true,
+				Description: "Is the user using 2FA.",
+				Computed:    true,
 			},
 			"created_at": schema.StringAttribute{
-				Computed: true,
+				Description: "The date and time the user was created.",
+				Computed:    true,
 			},
 			"updated_at": schema.StringAttribute{
-				Computed: true,
+				Description: "The date and time the user was last updated.",
+				Computed:    true,
 			},
 		},
 	}
