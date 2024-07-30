@@ -23,7 +23,7 @@ var (
 
 // userDataSourceModel maps the data source schema data.
 type userDataSourceModel struct {
-	ID         types.Int64  `tfsdk:"id"`
+	ID         types.Int32  `tfsdk:"id"`
 	ExternalID types.String `tfsdk:"external_id"`
 	UUID       types.String `tfsdk:"uuid"`
 	Username   types.String `tfsdk:"username"`
@@ -160,7 +160,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	var user pterodactyl.User
 	var err error
 	if !state.ID.IsNull() {
-		user, err = d.client.GetUser(int32(state.ID.ValueInt64()))
+		user, err = d.client.GetUser(int32(state.ID.ValueInt32()))
 	} else if !state.Username.IsNull() {
 		user, err = d.client.GetUserUsername(state.Username.ValueString())
 	} else if !state.Email.IsNull() {
@@ -185,7 +185,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 
 	// Map response body to model
 	state = userDataSourceModel{
-		ID:         types.Int64Value(int64(user.ID)),
+		ID:         types.Int32Value(user.ID),
 		ExternalID: types.StringValue(user.ExternalID),
 		UUID:       types.StringValue(user.UUID),
 		Username:   types.StringValue(user.Username),

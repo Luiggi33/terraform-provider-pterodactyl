@@ -34,7 +34,7 @@ type usersDataSourceModel struct {
 
 // Users schema data.
 type User struct {
-	ID         types.Int64  `tfsdk:"id"`
+	ID         types.Int32  `tfsdk:"id"`
 	ExternalID types.String `tfsdk:"external_id"`
 	UUID       types.String `tfsdk:"uuid"`
 	Username   types.String `tfsdk:"username"`
@@ -134,7 +134,7 @@ func (d *usersDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	// Map response body to model
 	for _, user := range users {
 		userState := User{
-			ID:         types.Int64Value(int64(user.ID)),
+			ID:         types.Int32Value(user.ID),
 			ExternalID: types.StringValue(user.ExternalID),
 			UUID:       types.StringValue(user.UUID),
 			Username:   types.StringValue(user.Username),

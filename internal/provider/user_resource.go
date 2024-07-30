@@ -34,7 +34,7 @@ type userResource struct {
 
 // userResourceModel maps the resource schema data.
 type userResourceModel struct {
-	ID        types.Int64  `tfsdk:"id"`
+	ID        types.Int32  `tfsdk:"id"`
 	Username  types.String `tfsdk:"username"`
 	Email     types.String `tfsdk:"email"`
 	FirstName types.String `tfsdk:"first_name"`
@@ -120,7 +120,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	}
 
 	// Map response body to schema and populate Computed attribute values
-	plan.ID = types.Int64Value(int64(user.ID))
+	plan.ID = types.Int32Value(user.ID)
 	plan.CreatedAt = types.StringValue(user.CreatedAt.Format(time.RFC3339))
 	plan.UpdatedAt = types.StringValue(time.Now().Format(time.RFC3339))
 
@@ -143,11 +143,11 @@ func (r *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	}
 
 	// Get refreshed user value from Pterodactyl
-	user, err := r.client.GetUser(int32(state.ID.ValueInt64()))
+	user, err := r.client.GetUser(int32(state.ID.ValueInt32()))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Reading Pterodactyl User",
-			"Could not read Pterodactyl user ID "+strconv.FormatInt(state.ID.ValueInt64(), 10)+": "+err.Error(),
+			"Could not read Pterodactyl user ID "+strconv.FormatInt(int64(state.ID.ValueInt32()), 10)+": "+err.Error(),
 		)
 		return
 	}
@@ -185,7 +185,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	}
 
 	// Update existing user
-	user, err := r.client.UpdateUser(int32(plan.ID.ValueInt64()), partialUser)
+	user, err := r.client.UpdateUser(int32(plan.ID.ValueInt32()), partialUser)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Pterodactyl User",
@@ -218,7 +218,7 @@ func (r *userResource) Delete(ctx context.Context, req resource.DeleteRequest, r
 	}
 
 	// Delete existing user
-	err := r.client.DeleteUser(int32(state.ID.ValueInt64()))
+	err := r.client.DeleteUser(int32(state.ID.ValueInt32()))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Deleting Pterodactyl User",
@@ -264,7 +264,7 @@ func (r *userResource) ImportState(ctx context.Context, req resource.ImportState
 
 	// Map response body to schema and populate Computed attribute values
 	state := userResourceModel{
-		ID:        types.Int64Value(int64(user.ID)),
+		ID:        types.Int32Value(user.ID),
 		Username:  types.StringValue(user.Username),
 		Email:     types.StringValue(user.Email),
 		FirstName: types.StringValue(user.FirstName),
