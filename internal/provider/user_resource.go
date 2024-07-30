@@ -218,7 +218,7 @@ func (r *userResource) Delete(ctx context.Context, req resource.DeleteRequest, r
 	}
 
 	// Delete existing user
-	err := r.client.DeleteUser(int32(state.ID.ValueInt32()))
+	err := r.client.DeleteUser(state.ID.ValueInt32())
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Deleting Pterodactyl User",
