@@ -171,8 +171,13 @@ func (p *pterodactylProvider) Configure(ctx context.Context, req provider.Config
 // DataSources defines the data sources implemented in the provider.
 func (p *pterodactylProvider) DataSources(_ context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
+		// User related data sources
 		NewUsersDataSource,
 		NewUserDataSource,
+		// Node related data sources
+		NewNodesDataSource,
+		NewNodeDataSource,
+		NewNodesLocationDataSource,
 	}
 }
 
