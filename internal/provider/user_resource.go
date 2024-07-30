@@ -143,7 +143,7 @@ func (r *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	}
 
 	// Get refreshed user value from Pterodactyl
-	user, err := r.client.GetUser(int(state.ID.ValueInt64()))
+	user, err := r.client.GetUser(int32(state.ID.ValueInt64()))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Reading Pterodactyl User",
@@ -185,7 +185,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	}
 
 	// Update existing user
-	user, err := r.client.UpdateUser(int(plan.ID.ValueInt64()), partialUser)
+	user, err := r.client.UpdateUser(int32(plan.ID.ValueInt64()), partialUser)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Pterodactyl User",
@@ -218,7 +218,7 @@ func (r *userResource) Delete(ctx context.Context, req resource.DeleteRequest, r
 	}
 
 	// Delete existing user
-	err := r.client.DeleteUser(int(state.ID.ValueInt64()))
+	err := r.client.DeleteUser(int32(state.ID.ValueInt64()))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Deleting Pterodactyl User",

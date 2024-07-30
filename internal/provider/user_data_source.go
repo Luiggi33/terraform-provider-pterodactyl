@@ -160,7 +160,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	var user pterodactyl.User
 	var err error
 	if !state.ID.IsNull() {
-		user, err = d.client.GetUser(int(state.ID.ValueInt64()))
+		user, err = d.client.GetUser(int32(state.ID.ValueInt64()))
 	} else if !state.Username.IsNull() {
 		user, err = d.client.GetUserUsername(state.Username.ValueString())
 	} else if !state.Email.IsNull() {
