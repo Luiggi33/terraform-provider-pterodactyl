@@ -63,7 +63,7 @@ func (d *usersDataSource) Schema(ctx context.Context, req datasource.SchemaReque
 				Computed:    true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
-						"id": schema.Int64Attribute{
+						"id": schema.Int32Attribute{
 							Description: "The ID of the user.",
 							Computed:    true,
 						},

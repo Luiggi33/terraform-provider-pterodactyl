@@ -9,7 +9,7 @@ import (
 	"github.com/Luiggi33/pterodactyl-client-go"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int32planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -64,11 +64,11 @@ func (r *nodeResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 	resp.Schema = schema.Schema{
 		Description: "The Pterodactyl node resource allows Terraform to manage nodes in the Pterodactyl Panel API.",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.Int64Attribute{
+			"id": schema.Int32Attribute{
 				Description: "The ID of the node.",
 				Computed:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
+				PlanModifiers: []planmodifier.Int32{
+					int32planmodifier.UseStateForUnknown(),
 				},
 			},
 			"name": schema.StringAttribute{
@@ -91,7 +91,7 @@ func (r *nodeResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Description: "The maintenance mode status of the node.",
 				Required:    true,
 			},
-			"location_id": schema.Int64Attribute{
+			"location_id": schema.Int32Attribute{
 				Description: "The location ID of the node.",
 				Required:    true,
 			},
@@ -103,31 +103,31 @@ func (r *nodeResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Description: "The scheme of the node.",
 				Required:    true,
 			},
-			"memory": schema.Int64Attribute{
+			"memory": schema.Int32Attribute{
 				Description: "The memory of the node.",
 				Required:    true,
 			},
-			"memory_overallocate": schema.Int64Attribute{
+			"memory_overallocate": schema.Int32Attribute{
 				Description: "The memory overallocate of the node.",
 				Required:    true,
 			},
-			"disk": schema.Int64Attribute{
+			"disk": schema.Int32Attribute{
 				Description: "The disk of the node.",
 				Required:    true,
 			},
-			"disk_overallocate": schema.Int64Attribute{
+			"disk_overallocate": schema.Int32Attribute{
 				Description: "The disk overallocate of the node.",
 				Required:    true,
 			},
-			"upload_size": schema.Int64Attribute{
+			"upload_size": schema.Int32Attribute{
 				Description: "The upload size of the node.",
 				Required:    true,
 			},
-			"daemon_sftp": schema.Int64Attribute{
+			"daemon_sftp": schema.Int32Attribute{
 				Description: "The daemon SFTP of the node.",
 				Required:    true,
 			},
-			"daemon_listen": schema.Int64Attribute{
+			"daemon_listen": schema.Int32Attribute{
 				Description: "The daemon listen of the node.",
 				Required:    true,
 			},

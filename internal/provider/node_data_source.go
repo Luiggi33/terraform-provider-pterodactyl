@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/Luiggi33/pterodactyl-client-go"
-	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/int32validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -65,12 +65,12 @@ func (d *nodeDataSource) Schema(ctx context.Context, req datasource.SchemaReques
 	resp.Schema = schema.Schema{
 		Description: "The Pterodactyl node data source allows Terraform to read a nodes data from the Pterodactyl Panel API.",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.Int64Attribute{
+			"id": schema.Int32Attribute{
 				Description: "The ID of the node.",
 				Computed:    true,
 				Optional:    true,
-				Validators: []validator.Int64{
-					int64validator.ExactlyOneOf(
+				Validators: []validator.Int32{
+					int32validator.ExactlyOneOf(
 						path.MatchRoot("id"),
 						path.MatchRoot("uuid"),
 						path.MatchRoot("name"),
@@ -109,7 +109,7 @@ func (d *nodeDataSource) Schema(ctx context.Context, req datasource.SchemaReques
 				Description: "The description of the node.",
 				Computed:    true,
 			},
-			"location_id": schema.Int64Attribute{
+			"location_id": schema.Int32Attribute{
 				Description: "The location ID of the node.",
 				Computed:    true,
 			},
@@ -129,31 +129,31 @@ func (d *nodeDataSource) Schema(ctx context.Context, req datasource.SchemaReques
 				Description: "The maintenance mode status of the node.",
 				Computed:    true,
 			},
-			"memory": schema.Int64Attribute{
+			"memory": schema.Int32Attribute{
 				Description: "The memory of the node.",
 				Computed:    true,
 			},
-			"memory_overallocate": schema.Int64Attribute{
+			"memory_overallocate": schema.Int32Attribute{
 				Description: "The memory overallocate of the node.",
 				Computed:    true,
 			},
-			"disk": schema.Int64Attribute{
+			"disk": schema.Int32Attribute{
 				Description: "The disk of the node.",
 				Computed:    true,
 			},
-			"disk_overallocate": schema.Int64Attribute{
+			"disk_overallocate": schema.Int32Attribute{
 				Description: "The disk overallocate of the node.",
 				Computed:    true,
 			},
-			"upload_size": schema.Int64Attribute{
+			"upload_size": schema.Int32Attribute{
 				Description: "The upload size of the node.",
 				Computed:    true,
 			},
-			"daemon_listen": schema.Int64Attribute{
+			"daemon_listen": schema.Int32Attribute{
 				Description: "The daemon listen of the node.",
 				Computed:    true,
 			},
-			"daemon_sftp": schema.Int64Attribute{
+			"daemon_sftp": schema.Int32Attribute{
 				Description: "The daemon SFTP of the node.",
 				Computed:    true,
 			},

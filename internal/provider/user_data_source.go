@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/Luiggi33/pterodactyl-client-go"
-	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/int32validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -57,12 +57,12 @@ func (d *userDataSource) Schema(ctx context.Context, req datasource.SchemaReques
 	resp.Schema = schema.Schema{
 		Description: "The Pterodactyl user data source allows Terraform to read user data from the Pterodactyl Panel API.",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.Int64Attribute{
+			"id": schema.Int32Attribute{
 				Description: "The ID of the user.",
 				Optional:    true,
 				Computed:    true,
-				Validators: []validator.Int64{
-					int64validator.ExactlyOneOf(
+				Validators: []validator.Int32{
+					int32validator.ExactlyOneOf(
 						path.MatchRoot("id"),
 						path.MatchRoot("external_id"),
 						path.MatchRoot("username"),

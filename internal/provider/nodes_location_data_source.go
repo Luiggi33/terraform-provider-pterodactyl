@@ -43,7 +43,7 @@ func (d *nodesLocationDataSource) Schema(ctx context.Context, req datasource.Sch
 	resp.Schema = schema.Schema{
 		Description: "The Pterodactyl nodes data source allows Terraform to read nodes from the Pterodactyl API.",
 		Attributes: map[string]schema.Attribute{
-			"location_id": schema.Int64Attribute{
+			"location_id": schema.Int32Attribute{
 				Description: "The ID of the location.",
 				Required:    true,
 			},
@@ -52,7 +52,7 @@ func (d *nodesLocationDataSource) Schema(ctx context.Context, req datasource.Sch
 				Computed:    true,
 				NestedObject: schema.NestedAttributeObject{
 					Attributes: map[string]schema.Attribute{
-						"id": schema.Int64Attribute{
+						"id": schema.Int32Attribute{
 							Description: "The ID of the node.",
 							Computed:    true,
 						},
@@ -72,7 +72,7 @@ func (d *nodesLocationDataSource) Schema(ctx context.Context, req datasource.Sch
 							Description: "The description of the node.",
 							Computed:    true,
 						},
-						"location_id": schema.Int64Attribute{
+						"location_id": schema.Int32Attribute{
 							Description: "The location ID of the node.",
 							Computed:    true,
 						},
@@ -92,31 +92,31 @@ func (d *nodesLocationDataSource) Schema(ctx context.Context, req datasource.Sch
 							Description: "The maintenance mode status of the node.",
 							Computed:    true,
 						},
-						"memory": schema.Int64Attribute{
+						"memory": schema.Int32Attribute{
 							Description: "The memory of the node.",
 							Computed:    true,
 						},
-						"memory_overallocate": schema.Int64Attribute{
+						"memory_overallocate": schema.Int32Attribute{
 							Description: "The memory overallocate of the node.",
 							Computed:    true,
 						},
-						"disk": schema.Int64Attribute{
+						"disk": schema.Int32Attribute{
 							Description: "The disk of the node.",
 							Computed:    true,
 						},
-						"disk_overallocate": schema.Int64Attribute{
+						"disk_overallocate": schema.Int32Attribute{
 							Description: "The disk overallocate of the node.",
 							Computed:    true,
 						},
-						"upload_size": schema.Int64Attribute{
+						"upload_size": schema.Int32Attribute{
 							Description: "The upload size of the node.",
 							Computed:    true,
 						},
-						"daemon_listen": schema.Int64Attribute{
+						"daemon_listen": schema.Int32Attribute{
 							Description: "The daemon listen of the node.",
 							Computed:    true,
 						},
-						"daemon_sftp": schema.Int64Attribute{
+						"daemon_sftp": schema.Int32Attribute{
 							Description: "The daemon SFTP of the node.",
 							Computed:    true,
 						},
