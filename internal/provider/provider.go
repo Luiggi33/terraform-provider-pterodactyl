@@ -185,5 +185,6 @@ func (p *pterodactylProvider) DataSources(_ context.Context) []func() datasource
 func (p *pterodactylProvider) Resources(_ context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		NewUserResource,
+		NewNodeResource,
 	}
 }
