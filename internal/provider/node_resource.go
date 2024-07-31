@@ -35,21 +35,21 @@ type nodeResource struct {
 // nodeResourceModel maps the resource schema data.
 type nodeResourceModel struct {
 	ID                 types.Int32  `tfsdk:"id"`
-	Name               types.String `json:"name"`
-	Description        types.String `json:"description"`
-	Public             types.Bool   `json:"public"`
-	BehindProxy        types.Bool   `json:"behind_proxy"`
-	MaintenanceMode    types.Bool   `json:"maintenance_mode"`
-	LocationID         types.Int32  `json:"location_id"`
-	FQDN               types.String `json:"fqdn"`
-	Scheme             types.String `json:"scheme"`
-	Memory             types.Int32  `json:"memory"`
-	MemoryOverallocate types.Int32  `json:"memory_overallocate"`
-	Disk               types.Int32  `json:"disk"`
-	DiskOverallocate   types.Int32  `json:"disk_overallocate"`
-	UploadSize         types.Int32  `json:"upload_size"`
-	DaemonSFTP         types.Int32  `json:"daemon_sftp"`
-	DaemonListen       types.Int32  `json:"daemon_listen"`
+	Name               types.String `tfsdk:"name"`
+	Description        types.String `tfsdk:"description"`
+	Public             types.Bool   `tfsdk:"public"`
+	BehindProxy        types.Bool   `tfsdk:"behind_proxy"`
+	MaintenanceMode    types.Bool   `tfsdk:"maintenance_mode"`
+	LocationID         types.Int32  `tfsdk:"location_id"`
+	FQDN               types.String `tfsdk:"fqdn"`
+	Scheme             types.String `tfsdk:"scheme"`
+	Memory             types.Int32  `tfsdk:"memory"`
+	MemoryOverallocate types.Int32  `tfsdk:"memory_overallocate"`
+	Disk               types.Int32  `tfsdk:"disk"`
+	DiskOverallocate   types.Int32  `tfsdk:"disk_overallocate"`
+	UploadSize         types.Int32  `tfsdk:"upload_size"`
+	DaemonSFTP         types.Int32  `tfsdk:"daemon_sftp"`
+	DaemonListen       types.Int32  `tfsdk:"daemon_listen"`
 	CreatedAt          types.String `tfsdk:"created_at"`
 	UpdatedAt          types.String `tfsdk:"updated_at"`
 }
