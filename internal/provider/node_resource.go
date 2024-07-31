@@ -35,6 +35,7 @@ type nodeResource struct {
 // nodeResourceModel maps the resource schema data.
 type nodeResourceModel struct {
 	ID                 types.Int32  `tfsdk:"id"`
+	UUID               types.String `tfsdk:"uuid"`
 	Name               types.String `tfsdk:"name"`
 	Description        types.String `tfsdk:"description"`
 	Public             types.Bool   `tfsdk:"public"`
@@ -71,13 +72,20 @@ func (r *nodeResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					int32planmodifier.UseStateForUnknown(),
 				},
 			},
+			"uuid": schema.StringAttribute{
+				Description: "The UUID of the node.",
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"name": schema.StringAttribute{
 				Description: "The name of the node.",
 				Required:    true,
 			},
 			"description": schema.StringAttribute{
 				Description: "The description of the node.",
-				Optional:    true,
+				Required:    true,
 			},
 			"public": schema.BoolAttribute{
 				Description: "The public status of the node.",
@@ -174,8 +182,8 @@ func (r *nodeResource) Create(ctx context.Context, req resource.CreateRequest, r
 		Disk:               plan.Disk.ValueInt32(),
 		DiskOverallocate:   plan.DiskOverallocate.ValueInt32(),
 		UploadSize:         plan.UploadSize.ValueInt32(),
-		DaemonSFTP:         plan.DaemonSFTP.ValueInt32(),
 		DaemonListen:       plan.DaemonListen.ValueInt32(),
+		DaemonSFTP:         plan.DaemonSFTP.ValueInt32(),
 	}
 
 	// Create new node
@@ -188,27 +196,38 @@ func (r *nodeResource) Create(ctx context.Context, req resource.CreateRequest, r
 		return
 	}
 
-	// Map response body to schema and populate Computed attribute values
-	plan.ID = types.Int32Value(node.ID)
-	plan.CreatedAt = types.StringValue(node.CreatedAt.Format(time.RFC3339))
+	var newNode pterodactyl.Node = node
+	newNode.Description = plan.Description.ValueString()
 
-	if !plan.Description.IsNull() {
-		updatedNode, err := r.client.UpdateNode(plan.ID.ValueInt32(), partialNode)
-		if err != nil {
-			resp.Diagnostics.AddError(
-				"Error Updating Pterodactyl Node",
-				"Could not update node, unexpected error: "+err.Error(),
-			)
-			return
-		}
-
-		// Update resource state with updated values
-		plan.Description = types.StringValue(updatedNode.Description)
-		plan.UpdatedAt = types.StringValue(updatedNode.UpdatedAt.Format(time.RFC3339))
-	} else {
-		plan.Description = types.StringValue(node.Description)
-		plan.UpdatedAt = types.StringValue(node.UpdatedAt.Format(time.RFC3339))
+	updatedNode, err := r.client.UpdateNode(node.ID, newNode)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error updating node",
+			"Could not update node, unexpected error: "+err.Error(),
+		)
+		return
 	}
+
+	// Update resource plan with updated values
+	plan.ID = types.Int32Value(updatedNode.ID)
+	plan.UUID = types.StringValue(updatedNode.UUID)
+	plan.Name = types.StringValue(updatedNode.Name)
+	plan.Description = types.StringValue(updatedNode.Description)
+	plan.Public = types.BoolValue(updatedNode.Public)
+	plan.BehindProxy = types.BoolValue(updatedNode.BehindProxy)
+	plan.MaintenanceMode = types.BoolValue(updatedNode.MaintenanceMode)
+	plan.LocationID = types.Int32Value(updatedNode.LocationID)
+	plan.FQDN = types.StringValue(updatedNode.FQDN)
+	plan.Scheme = types.StringValue(updatedNode.Scheme)
+	plan.Memory = types.Int32Value(updatedNode.Memory)
+	plan.MemoryOverallocate = types.Int32Value(updatedNode.MemoryOverallocate)
+	plan.Disk = types.Int32Value(updatedNode.Disk)
+	plan.DiskOverallocate = types.Int32Value(updatedNode.DiskOverallocate)
+	plan.UploadSize = types.Int32Value(updatedNode.UploadSize)
+	plan.DaemonSFTP = types.Int32Value(updatedNode.DaemonSFTP)
+	plan.DaemonListen = types.Int32Value(updatedNode.DaemonListen)
+	plan.CreatedAt = types.StringValue(updatedNode.CreatedAt.Format(time.RFC3339))
+	plan.UpdatedAt = types.StringValue(updatedNode.UpdatedAt.Format(time.RFC3339))
 
 	// Set state to fully populated data
 	diags = resp.State.Set(ctx, plan)
@@ -240,6 +259,7 @@ func (r *nodeResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 
 	// Overwrite items with refreshed state
 	state.Name = types.StringValue(node.Name)
+	state.UUID = types.StringValue(node.UUID)
 	state.Description = types.StringValue(node.Description)
 	state.Public = types.BoolValue(node.Public)
 	state.BehindProxy = types.BoolValue(node.BehindProxy)
@@ -305,6 +325,7 @@ func (r *nodeResource) Update(ctx context.Context, req resource.UpdateRequest, r
 
 	// Update resource plan with updated values
 	plan.Name = types.StringValue(node.Name)
+	plan.UUID = types.StringValue(node.UUID)
 	plan.Description = types.StringValue(node.Description)
 	plan.Public = types.BoolValue(node.Public)
 	plan.BehindProxy = types.BoolValue(node.BehindProxy)
@@ -387,6 +408,7 @@ func (r *nodeResource) ImportState(ctx context.Context, req resource.ImportState
 	// Map response body to schema and populate Computed attribute values
 	state := nodeResourceModel{
 		ID:                 types.Int32Value(node.ID),
+		UUID:               types.StringValue(node.UUID),
 		Name:               types.StringValue(node.Name),
 		Description:        types.StringValue(node.Description),
 		Public:             types.BoolValue(node.Public),
