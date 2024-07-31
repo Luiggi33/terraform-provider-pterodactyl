@@ -143,7 +143,7 @@ func (r *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	}
 
 	// Get refreshed user value from Pterodactyl
-	user, err := r.client.GetUser(int32(state.ID.ValueInt32()))
+	user, err := r.client.GetUser(state.ID.ValueInt32())
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Reading Pterodactyl User",
@@ -185,7 +185,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	}
 
 	// Update existing user
-	user, err := r.client.UpdateUser(int32(plan.ID.ValueInt32()), partialUser)
+	user, err := r.client.UpdateUser(plan.ID.ValueInt32(), partialUser)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Pterodactyl User",

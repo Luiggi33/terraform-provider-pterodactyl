@@ -193,7 +193,7 @@ func (r *nodeResource) Create(ctx context.Context, req resource.CreateRequest, r
 	plan.CreatedAt = types.StringValue(node.CreatedAt.Format(time.RFC3339))
 
 	if !plan.Description.IsNull() {
-		updatedNode, err := r.client.UpdateNode(int32(plan.ID.ValueInt32()), partialNode)
+		updatedNode, err := r.client.UpdateNode(plan.ID.ValueInt32(), partialNode)
 		if err != nil {
 			resp.Diagnostics.AddError(
 				"Error Updating Pterodactyl Node",
@@ -228,7 +228,7 @@ func (r *nodeResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	}
 
 	// Get refreshed node value from Pterodactyl
-	node, err := r.client.GetNode(int32(state.ID.ValueInt32()))
+	node, err := r.client.GetNode(state.ID.ValueInt32())
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Reading Pterodactyl Node",
@@ -293,7 +293,7 @@ func (r *nodeResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	}
 
 	// Update existing node
-	node, err := r.client.UpdateNode(int32(plan.ID.ValueInt32()), partialNode)
+	node, err := r.client.UpdateNode(plan.ID.ValueInt32(), partialNode)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Pterodactyl Node",
