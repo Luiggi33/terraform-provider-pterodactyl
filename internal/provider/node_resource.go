@@ -205,9 +205,10 @@ func (r *nodeResource) Create(ctx context.Context, req resource.CreateRequest, r
 		// Update resource state with updated values
 		plan.Description = types.StringValue(updatedNode.Description)
 		plan.UpdatedAt = types.StringValue(updatedNode.UpdatedAt.Format(time.RFC3339))
+	} else {
+		plan.Description = types.StringValue(node.Description)
+		plan.UpdatedAt = types.StringValue(node.UpdatedAt.Format(time.RFC3339))
 	}
-
-	plan.UpdatedAt = types.StringValue(time.Now().Format(time.RFC3339))
 
 	// Set state to fully populated data
 	diags = resp.State.Set(ctx, plan)
