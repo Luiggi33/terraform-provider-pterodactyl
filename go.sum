@@ -6,6 +6,8 @@ github.com/Kunde21/markdownfmt/v3 v3.1.0 h1:KiZu9LKs+wFFBQKhrZJrFZwtLnCCWJahL+S+
 github.com/Kunde21/markdownfmt/v3 v3.1.0/go.mod h1:tPXN1RTyOzJwhfHoon9wUr4HGYmWgVxSQN6VBJDkrVc=
 github.com/Luiggi33/pterodactyl-client-go v0.0.1 h1:BieFCFCWZM99NVcwom/FOF7ISuLdIC5HwGmdPLH/Tp8=
 github.com/Luiggi33/pterodactyl-client-go v0.0.1/go.mod h1:lGesDuNHKaPCdArSZw3t3OIkVyIaj0H5nYEONXBJXVk=
+github.com/Luiggi33/pterodactyl-client-go v0.0.3 h1:dUYARqzTRPxCi1yxVFRm8gb54kWLNgpQylkwNhv9pqQ=
+github.com/Luiggi33/pterodactyl-client-go v0.0.3/go.mod h1:lGesDuNHKaPCdArSZw3t3OIkVyIaj0H5nYEONXBJXVk=
 github.com/Masterminds/goutils v1.1.1 h1:5nUrii3FMTL5diU80unEVvNevw1nH4+ZV4DSLVJLSYI=
 github.com/Masterminds/goutils v1.1.1/go.mod h1:8cTjp+g8YejhMuvIA5y2vz3BpJxksy863GQaJW2MFNU=
 github.com/Masterminds/semver/v3 v3.2.0 h1:3MEsd0SM6jqZojhjLWWeBY+Kcjy9i6MQAeY7YgDP83g=
