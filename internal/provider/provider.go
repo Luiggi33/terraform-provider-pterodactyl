@@ -177,7 +177,6 @@ func (p *pterodactylProvider) DataSources(_ context.Context) []func() datasource
 		// Node related data sources
 		NewNodesDataSource,
 		NewNodeDataSource,
-		NewNodesLocationDataSource,
 	}
 }
 

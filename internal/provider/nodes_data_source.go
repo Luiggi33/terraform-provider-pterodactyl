@@ -29,7 +29,8 @@ type nodesDataSource struct {
 
 // nodesDataSourceModel maps the data source schema data.
 type nodesDataSourceModel struct {
-	Nodes []Node `tfsdk:"nodes"`
+	LocationID types.Int32 `tfsdk:"location_id"`
+	Nodes      []Node      `tfsdk:"nodes"`
 }
 
 // Node schema data.
@@ -66,6 +67,10 @@ func (d *nodesDataSource) Schema(ctx context.Context, req datasource.SchemaReque
 	resp.Schema = schema.Schema{
 		Description: "The Pterodactyl nodes data source allows Terraform to read nodes from the Pterodactyl API.",
 		Attributes: map[string]schema.Attribute{
+			"location_id": schema.Int32Attribute{
+				Description: "The ID of the location.",
+				Optional:    true,
+			},
 			"nodes": schema.ListNestedAttribute{
 				Description: "The list of nodes.",
 				Computed:    true,
@@ -167,10 +172,18 @@ func (d *nodesDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 		return
 	}
 
-	state.Nodes = make([]Node, 0, len(nodes))
+	// sub optimal, but at least somewhat more efficient
+	if state.LocationID.ValueInt32() != 0 {
+		state.Nodes = make([]Node, 0, len(nodes))
+	} else {
+		state.Nodes = make([]Node, 0)
+	}
 
 	// Map response body to model
 	for _, node := range nodes {
+		if state.LocationID.ValueInt32() != 0 && node.LocationID != state.LocationID.ValueInt32() {
+			continue
+		}
 		state.Nodes = append(state.Nodes, Node{
 			ID:                 types.Int32Value(node.ID),
 			UUID:               types.StringValue(node.UUID),
