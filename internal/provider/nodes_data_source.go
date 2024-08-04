@@ -6,8 +6,10 @@ import (
 	"time"
 
 	"github.com/Luiggi33/pterodactyl-client-go"
+	"github.com/hashicorp/terraform-plugin-framework-validators/int32validator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -70,6 +72,9 @@ func (d *nodesDataSource) Schema(ctx context.Context, req datasource.SchemaReque
 			"location_id": schema.Int32Attribute{
 				Description: "The ID of the location.",
 				Optional:    true,
+				Validators: []validator.Int32{
+					int32validator.AtLeast(1),
+				},
 			},
 			"nodes": schema.ListNestedAttribute{
 				Description: "The list of nodes.",
