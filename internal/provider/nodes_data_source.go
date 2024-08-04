@@ -177,7 +177,7 @@ func (d *nodesDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	}
 
 	// sub optimal, but at least somewhat more efficient
-	if state.LocationID.ValueInt32() != 0 {
+	if state.LocationID.IsNull() {
 		state.Nodes = make([]Node, 0, len(nodes))
 	} else {
 		state.Nodes = make([]Node, 0)
@@ -185,7 +185,7 @@ func (d *nodesDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 
 	// Map response body to model
 	for _, node := range nodes {
-		if state.LocationID.ValueInt32() != 0 && node.LocationID != state.LocationID.ValueInt32() {
+		if state.LocationID.IsNull() && node.LocationID != state.LocationID.ValueInt32() {
 			continue
 		}
 		state.Nodes = append(state.Nodes, Node{
