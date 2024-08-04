@@ -144,6 +144,10 @@ func (d *nodesDataSource) Schema(ctx context.Context, req datasource.SchemaReque
 							Description: "The daemon SFTP of the node.",
 							Computed:    true,
 						},
+						"daemon_base": schema.StringAttribute{
+							Description: "The file base of the daemon of the node",
+							Computed:    true,
+						},
 						"created_at": schema.StringAttribute{
 							Description: "The creation date of the node.",
 							Computed:    true,
@@ -202,6 +206,7 @@ func (d *nodesDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 			UploadSize:         types.Int32Value(node.UploadSize),
 			DaemonListen:       types.Int32Value(node.DaemonListen),
 			DaemonSFTP:         types.Int32Value(node.DaemonSFTP),
+			DaemonBase:         types.StringValue(node.DaemonBase),
 			CreatedAt:          types.StringValue(node.CreatedAt.Format(time.RFC3339)),
 			UpdatedAt:          types.StringValue(node.UpdatedAt.Format(time.RFC3339)),
 		})

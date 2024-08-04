@@ -51,6 +51,7 @@ type nodeResourceModel struct {
 	UploadSize         types.Int32  `tfsdk:"upload_size"`
 	DaemonSFTP         types.Int32  `tfsdk:"daemon_sftp"`
 	DaemonListen       types.Int32  `tfsdk:"daemon_listen"`
+	DaemonBase         types.String `tfsdk:"daemon_base"`
 	CreatedAt          types.String `tfsdk:"created_at"`
 	UpdatedAt          types.String `tfsdk:"updated_at"`
 }
@@ -139,6 +140,10 @@ func (r *nodeResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Description: "The daemon listen of the node.",
 				Required:    true,
 			},
+			"daemon_base": schema.StringAttribute{
+				Description: "The base file for the daemon of the node.",
+				Computed:    true,
+			},
 			"created_at": schema.StringAttribute{
 				Description: "The creation date of the node.",
 				Computed:    true,
@@ -220,6 +225,7 @@ func (r *nodeResource) Create(ctx context.Context, req resource.CreateRequest, r
 	plan.UploadSize = types.Int32Value(updatedNode.UploadSize)
 	plan.DaemonSFTP = types.Int32Value(updatedNode.DaemonSFTP)
 	plan.DaemonListen = types.Int32Value(updatedNode.DaemonListen)
+	plan.DaemonBase = types.StringValue(updatedNode.DaemonBase)
 	plan.CreatedAt = types.StringValue(updatedNode.CreatedAt.Format(time.RFC3339))
 	plan.UpdatedAt = types.StringValue(updatedNode.UpdatedAt.Format(time.RFC3339))
 
@@ -268,6 +274,7 @@ func (r *nodeResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	state.UploadSize = types.Int32Value(node.UploadSize)
 	state.DaemonSFTP = types.Int32Value(node.DaemonSFTP)
 	state.DaemonListen = types.Int32Value(node.DaemonListen)
+	state.DaemonBase = types.StringValue(node.DaemonBase)
 	state.CreatedAt = types.StringValue(node.CreatedAt.Format(time.RFC3339))
 	state.UpdatedAt = types.StringValue(node.UpdatedAt.Format(time.RFC3339))
 
@@ -334,6 +341,7 @@ func (r *nodeResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	plan.UploadSize = types.Int32Value(node.UploadSize)
 	plan.DaemonSFTP = types.Int32Value(node.DaemonSFTP)
 	plan.DaemonListen = types.Int32Value(node.DaemonListen)
+	plan.DaemonBase = types.StringValue(node.DaemonBase)
 	plan.CreatedAt = types.StringValue(node.CreatedAt.Format(time.RFC3339))
 	plan.UpdatedAt = types.StringValue(node.UpdatedAt.Format(time.RFC3339))
 
@@ -418,6 +426,7 @@ func (r *nodeResource) ImportState(ctx context.Context, req resource.ImportState
 		UploadSize:         types.Int32Value(node.UploadSize),
 		DaemonSFTP:         types.Int32Value(node.DaemonSFTP),
 		DaemonListen:       types.Int32Value(node.DaemonListen),
+		DaemonBase:         types.StringValue(node.DaemonBase),
 		CreatedAt:          types.StringValue(node.CreatedAt.Format(time.RFC3339)),
 		UpdatedAt:          types.StringValue(node.UpdatedAt.Format(time.RFC3339)),
 	}

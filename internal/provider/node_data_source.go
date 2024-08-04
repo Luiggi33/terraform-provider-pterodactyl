@@ -157,6 +157,10 @@ func (d *nodeDataSource) Schema(ctx context.Context, req datasource.SchemaReques
 				Description: "The daemon SFTP of the node.",
 				Computed:    true,
 			},
+			"daemon_base": schema.StringAttribute{
+				Description: "The file base of the daemon of the node",
+				Computed:    true,
+			},
 			"created_at": schema.StringAttribute{
 				Description: "The creation date of the node.",
 				Computed:    true,
