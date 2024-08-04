@@ -190,7 +190,7 @@ func (d *nodesDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 
 	// Map response body to model
 	for _, node := range nodes {
-		if state.LocationID.IsNull() && node.LocationID != state.LocationID.ValueInt32() {
+		if !state.LocationID.IsNull() && node.LocationID != state.LocationID.ValueInt32() {
 			continue
 		}
 		state.Nodes = append(state.Nodes, Node{
