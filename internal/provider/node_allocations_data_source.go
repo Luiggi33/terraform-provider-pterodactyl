@@ -52,6 +52,10 @@ func (d *nodeAllocationsDataSource) Schema(ctx context.Context, req datasource.S
 	resp.Schema = schema.Schema{
 		Description: "The Pterodactyl IP Allocations for servers.",
 		Attributes: map[string]schema.Attribute{
+			"nodeid": schema.Int32Attribute{
+				Description: "The ID of the node to get allocations from.",
+				Required:    true,
+			},
 			"allocations": schema.ListNestedAttribute{
 				Description: "The list of allocations to a node.",
 				Computed:    true,
@@ -104,15 +108,15 @@ func (d *nodeAllocationsDataSource) Read(ctx context.Context, req datasource.Rea
 	state.NodeAllocations = make([]Allocation, len(nodes))
 
 	// Map response body to model
-	for _, allocation := range nodes {
-		state.NodeAllocations = append(state.NodeAllocations, Allocation{
+	for i, allocation := range nodes {
+		state.NodeAllocations[i] = Allocation{
 			ID:       types.Int32Value(allocation.ID),
 			IP:       types.StringValue(allocation.IP),
 			Alias:    types.StringValue(allocation.Alias),
 			Port:     types.Int32Value(allocation.Port),
 			Notes:    types.StringValue(allocation.Notes),
 			Assigned: types.BoolValue(allocation.Assigned),
-		})
+		}
 	}
 
 	// Set state
