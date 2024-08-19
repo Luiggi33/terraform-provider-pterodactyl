@@ -54,6 +54,12 @@ type nodeResourceModel struct {
 	DaemonBase         types.String `tfsdk:"daemon_base"`
 	CreatedAt          types.String `tfsdk:"created_at"`
 	UpdatedAt          types.String `tfsdk:"updated_at"`
+	Allocations        []Allocation `tfsdk:"allocations"`
+}
+
+type PartialAllocation struct {
+	IP   types.String `tfsdk:"ip"`
+	Port types.Int32  `tfsdk:"port"`
 }
 
 // Metadata returns the resource type name.
@@ -140,6 +146,38 @@ func (r *nodeResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Description: "The daemon listen of the node.",
 				Required:    true,
 			},
+			"allocations": schema.ListNestedAttribute{
+				Description: "The list of allocations to a node.",
+				Required:    true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"id": schema.Int32Attribute{
+							Description: "The ID of the node.",
+							Computed:    true,
+						},
+						"ip": schema.StringAttribute{
+							Description: "The IP that is allocated",
+							Required:    true,
+						},
+						"alias": schema.StringAttribute{
+							Description: "A alias for the allocation",
+							Computed:    true,
+						},
+						"port": schema.Int32Attribute{
+							Description: "The port allocated in the allocation",
+							Required:    true,
+						},
+						"notes": schema.StringAttribute{
+							Description: "Any notes to the allocation",
+							Computed:    true,
+						},
+						"assigned": schema.BoolAttribute{
+							Description: "Is the allocation assigned?",
+							Computed:    true,
+						},
+					},
+				},
+			},
 			"daemon_base": schema.StringAttribute{
 				Description: "The base file for the daemon of the node.",
 				Computed:    true,
@@ -195,39 +233,65 @@ func (r *nodeResource) Create(ctx context.Context, req resource.CreateRequest, r
 		return
 	}
 
-	var newNode pterodactyl.Node = node
-	newNode.Description = plan.Description.ValueString()
+	for _, allocation := range plan.Allocations {
+		// Create partial allocation
+		partialAllocation := pterodactyl.PartialAllocation{
+			IP:    allocation.IP.ValueString(),
+			Ports: []int32{allocation.Port.ValueInt32()},
+		}
 
-	updatedNode, err := r.client.UpdateNode(node.ID, newNode)
+		// Create new allocation
+		err := r.client.CreateAllocation(node.ID, partialAllocation)
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Error creating node allocation",
+				"Could not create node allocation, unexpected error: "+err.Error(),
+			)
+			return
+		}
+	}
+
+	nodeAllocations, err := r.client.GetNodeAllocations(node.ID)
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Error updating node",
-			"Could not update node, unexpected error: "+err.Error(),
+			"Error creating node allocation",
+			"Could not fetch node allocation, unexpected error: "+err.Error(),
 		)
 		return
 	}
 
 	// Update resource plan with updated values
-	plan.ID = types.Int32Value(updatedNode.ID)
-	plan.UUID = types.StringValue(updatedNode.UUID)
-	plan.Name = types.StringValue(updatedNode.Name)
-	plan.Description = types.StringValue(updatedNode.Description)
-	plan.Public = types.BoolValue(updatedNode.Public)
-	plan.BehindProxy = types.BoolValue(updatedNode.BehindProxy)
-	plan.MaintenanceMode = types.BoolValue(updatedNode.MaintenanceMode)
-	plan.LocationID = types.Int32Value(updatedNode.LocationID)
-	plan.FQDN = types.StringValue(updatedNode.FQDN)
-	plan.Scheme = types.StringValue(updatedNode.Scheme)
-	plan.Memory = types.Int32Value(updatedNode.Memory)
-	plan.MemoryOverallocate = types.Int32Value(updatedNode.MemoryOverallocate)
-	plan.Disk = types.Int32Value(updatedNode.Disk)
-	plan.DiskOverallocate = types.Int32Value(updatedNode.DiskOverallocate)
-	plan.UploadSize = types.Int32Value(updatedNode.UploadSize)
-	plan.DaemonSFTP = types.Int32Value(updatedNode.DaemonSFTP)
-	plan.DaemonListen = types.Int32Value(updatedNode.DaemonListen)
-	plan.DaemonBase = types.StringValue(updatedNode.DaemonBase)
-	plan.CreatedAt = types.StringValue(updatedNode.CreatedAt.Format(time.RFC3339))
-	plan.UpdatedAt = types.StringValue(updatedNode.UpdatedAt.Format(time.RFC3339))
+	plan.ID = types.Int32Value(node.ID)
+	plan.UUID = types.StringValue(node.UUID)
+	plan.Name = types.StringValue(node.Name)
+	plan.Description = types.StringValue(node.Description)
+	plan.Public = types.BoolValue(node.Public)
+	plan.BehindProxy = types.BoolValue(node.BehindProxy)
+	plan.MaintenanceMode = types.BoolValue(node.MaintenanceMode)
+	plan.LocationID = types.Int32Value(node.LocationID)
+	plan.FQDN = types.StringValue(node.FQDN)
+	plan.Scheme = types.StringValue(node.Scheme)
+	plan.Memory = types.Int32Value(node.Memory)
+	plan.MemoryOverallocate = types.Int32Value(node.MemoryOverallocate)
+	plan.Disk = types.Int32Value(node.Disk)
+	plan.DiskOverallocate = types.Int32Value(node.DiskOverallocate)
+	plan.UploadSize = types.Int32Value(node.UploadSize)
+	plan.DaemonSFTP = types.Int32Value(node.DaemonSFTP)
+	plan.DaemonListen = types.Int32Value(node.DaemonListen)
+	plan.DaemonBase = types.StringValue(node.DaemonBase)
+	plan.CreatedAt = types.StringValue(node.CreatedAt.Format(time.RFC3339))
+	plan.UpdatedAt = types.StringValue(node.UpdatedAt.Format(time.RFC3339))
+
+	for _, allocation := range nodeAllocations {
+		plan.Allocations = append(plan.Allocations, Allocation{
+			ID:       types.Int32Value(allocation.ID),
+			IP:       types.StringValue(allocation.IP),
+			Alias:    types.StringValue(allocation.Alias),
+			Port:     types.Int32Value(allocation.Port),
+			Notes:    types.StringValue(allocation.Notes),
+			Assigned: types.BoolValue(allocation.Assigned),
+		})
+	}
 
 	// Set state to fully populated data
 	diags = resp.State.Set(ctx, plan)
@@ -257,6 +321,15 @@ func (r *nodeResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 		return
 	}
 
+	nodeAllocations, err := r.client.GetNodeAllocations(state.ID.ValueInt32())
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error Reading Pterodactyl Node Allocations",
+			"Could not read Pterodactyl node allocations for node ID "+strconv.FormatInt(int64(state.ID.ValueInt32()), 10)+": "+err.Error(),
+		)
+		return
+	}
+
 	// Overwrite items with refreshed state
 	state.Name = types.StringValue(node.Name)
 	state.UUID = types.StringValue(node.UUID)
@@ -277,6 +350,17 @@ func (r *nodeResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	state.DaemonBase = types.StringValue(node.DaemonBase)
 	state.CreatedAt = types.StringValue(node.CreatedAt.Format(time.RFC3339))
 	state.UpdatedAt = types.StringValue(node.UpdatedAt.Format(time.RFC3339))
+
+	for _, allocation := range nodeAllocations {
+		state.Allocations = append(state.Allocations, Allocation{
+			ID:       types.Int32Value(allocation.ID),
+			IP:       types.StringValue(allocation.IP),
+			Alias:    types.StringValue(allocation.Alias),
+			Port:     types.Int32Value(allocation.Port),
+			Notes:    types.StringValue(allocation.Notes),
+			Assigned: types.BoolValue(allocation.Assigned),
+		})
+	}
 
 	// Set refreshed state
 	diags = resp.State.Set(ctx, &state)
@@ -324,6 +408,66 @@ func (r *nodeResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		return
 	}
 
+	// Check which allocations need to be created and which need to be deleted
+	nodeAllocations, err := r.client.GetNodeAllocations(plan.ID.ValueInt32())
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error Updating Pterodactyl Node Allocations",
+			"Could not update node allocations: "+err.Error(),
+		)
+		return
+	}
+
+	// Delete unneeded allocations
+	for _, allocation := range nodeAllocations {
+		found := false
+		for _, planAllocation := range plan.Allocations {
+			if allocation.ID == planAllocation.ID.ValueInt32() {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			err := r.client.DeleteAllocation(plan.ID.ValueInt32(), allocation.ID)
+			if err != nil {
+				resp.Diagnostics.AddError(
+					"Error deleting node allocation",
+					"Could not delete node allocation, unexpected error: "+err.Error(),
+				)
+				return
+			}
+		}
+	}
+
+	// Create new allocations
+	for _, allocation := range plan.Allocations {
+		if allocation.ID.IsNull() {
+			partialAllocation := pterodactyl.PartialAllocation{
+				IP:    allocation.IP.ValueString(),
+				Ports: []int32{allocation.Port.ValueInt32()},
+			}
+			// Create new allocation
+			err := r.client.CreateAllocation(plan.ID.ValueInt32(), partialAllocation)
+			if err != nil {
+				resp.Diagnostics.AddError(
+					"Error creating node allocation",
+					"Could not create node allocation, unexpected error: "+err.Error(),
+				)
+				return
+			}
+		}
+	}
+
+	nodeAllocations, err = r.client.GetNodeAllocations(plan.ID.ValueInt32())
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error Updating Pterodactyl Node Allocations",
+			"Could not update node allocations: "+err.Error(),
+		)
+		return
+	}
+
 	// Update resource plan with updated values
 	plan.Name = types.StringValue(node.Name)
 	plan.UUID = types.StringValue(node.UUID)
@@ -344,6 +488,17 @@ func (r *nodeResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	plan.DaemonBase = types.StringValue(node.DaemonBase)
 	plan.CreatedAt = types.StringValue(node.CreatedAt.Format(time.RFC3339))
 	plan.UpdatedAt = types.StringValue(node.UpdatedAt.Format(time.RFC3339))
+
+	for _, allocation := range nodeAllocations {
+		plan.Allocations = append(plan.Allocations, Allocation{
+			ID:       types.Int32Value(allocation.ID),
+			IP:       types.StringValue(allocation.IP),
+			Alias:    types.StringValue(allocation.Alias),
+			Port:     types.Int32Value(allocation.Port),
+			Notes:    types.StringValue(allocation.Notes),
+			Assigned: types.BoolValue(allocation.Assigned),
+		})
+	}
 
 	diags = resp.State.Set(ctx, plan)
 	resp.Diagnostics.Append(diags...)
@@ -429,6 +584,26 @@ func (r *nodeResource) ImportState(ctx context.Context, req resource.ImportState
 		DaemonBase:         types.StringValue(node.DaemonBase),
 		CreatedAt:          types.StringValue(node.CreatedAt.Format(time.RFC3339)),
 		UpdatedAt:          types.StringValue(node.UpdatedAt.Format(time.RFC3339)),
+	}
+
+	nodeAllocations, err := r.client.GetNodeAllocations(state.ID.ValueInt32())
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error Importing Pterodactyl Node Allocations",
+			"Could not import node allocations: "+err.Error(),
+		)
+		return
+	}
+
+	for _, allocation := range nodeAllocations {
+		state.Allocations = append(state.Allocations, Allocation{
+			ID:       types.Int32Value(allocation.ID),
+			IP:       types.StringValue(allocation.IP),
+			Alias:    types.StringValue(allocation.Alias),
+			Port:     types.Int32Value(allocation.Port),
+			Notes:    types.StringValue(allocation.Notes),
+			Assigned: types.BoolValue(allocation.Assigned),
+		})
 	}
 
 	// Set state to fully populated data
