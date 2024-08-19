@@ -282,6 +282,8 @@ func (r *nodeResource) Create(ctx context.Context, req resource.CreateRequest, r
 	plan.CreatedAt = types.StringValue(node.CreatedAt.Format(time.RFC3339))
 	plan.UpdatedAt = types.StringValue(node.UpdatedAt.Format(time.RFC3339))
 
+	plan.Allocations = make([]Allocation, len(nodeAllocations))
+
 	for _, allocation := range nodeAllocations {
 		plan.Allocations = append(plan.Allocations, Allocation{
 			ID:       types.Int32Value(allocation.ID),
@@ -488,6 +490,8 @@ func (r *nodeResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	plan.DaemonBase = types.StringValue(node.DaemonBase)
 	plan.CreatedAt = types.StringValue(node.CreatedAt.Format(time.RFC3339))
 	plan.UpdatedAt = types.StringValue(node.UpdatedAt.Format(time.RFC3339))
+
+	plan.Allocations = make([]Allocation, len(nodeAllocations))
 
 	for _, allocation := range nodeAllocations {
 		plan.Allocations = append(plan.Allocations, Allocation{
