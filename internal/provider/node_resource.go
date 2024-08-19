@@ -237,7 +237,7 @@ func (r *nodeResource) Create(ctx context.Context, req resource.CreateRequest, r
 		// Create partial allocation
 		partialAllocation := pterodactyl.PartialAllocation{
 			IP:    allocation.IP.ValueString(),
-			Ports: []int32{allocation.Port.ValueInt32()},
+			Ports: []string{strconv.Itoa(int(allocation.Port.ValueInt32()))},
 		}
 
 		// Create new allocation
@@ -445,7 +445,7 @@ func (r *nodeResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		if allocation.ID.IsNull() {
 			partialAllocation := pterodactyl.PartialAllocation{
 				IP:    allocation.IP.ValueString(),
-				Ports: []int32{allocation.Port.ValueInt32()},
+				Ports: []string{strconv.Itoa(int(allocation.Port.ValueInt32()))},
 			}
 			// Create new allocation
 			err := r.client.CreateAllocation(plan.ID.ValueInt32(), partialAllocation)
