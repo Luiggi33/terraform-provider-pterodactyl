@@ -284,15 +284,15 @@ func (r *nodeResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	plan.Allocations = make([]Allocation, len(nodeAllocations))
 
-	for _, allocation := range nodeAllocations {
-		plan.Allocations = append(plan.Allocations, Allocation{
+	for i, allocation := range nodeAllocations {
+		plan.Allocations[i] = Allocation{
 			ID:       types.Int32Value(allocation.ID),
 			IP:       types.StringValue(allocation.IP),
 			Alias:    types.StringValue(allocation.Alias),
 			Port:     types.Int32Value(allocation.Port),
 			Notes:    types.StringValue(allocation.Notes),
 			Assigned: types.BoolValue(allocation.Assigned),
-		})
+		}
 	}
 
 	// Set state to fully populated data
@@ -353,15 +353,17 @@ func (r *nodeResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	state.CreatedAt = types.StringValue(node.CreatedAt.Format(time.RFC3339))
 	state.UpdatedAt = types.StringValue(node.UpdatedAt.Format(time.RFC3339))
 
-	for _, allocation := range nodeAllocations {
-		state.Allocations = append(state.Allocations, Allocation{
+	state.Allocations = make([]Allocation, len(nodeAllocations))
+
+	for i, allocation := range nodeAllocations {
+		state.Allocations[i] = Allocation{
 			ID:       types.Int32Value(allocation.ID),
 			IP:       types.StringValue(allocation.IP),
 			Alias:    types.StringValue(allocation.Alias),
 			Port:     types.Int32Value(allocation.Port),
 			Notes:    types.StringValue(allocation.Notes),
 			Assigned: types.BoolValue(allocation.Assigned),
-		})
+		}
 	}
 
 	// Set refreshed state
@@ -493,15 +495,15 @@ func (r *nodeResource) Update(ctx context.Context, req resource.UpdateRequest, r
 
 	plan.Allocations = make([]Allocation, len(nodeAllocations))
 
-	for _, allocation := range nodeAllocations {
-		plan.Allocations = append(plan.Allocations, Allocation{
+	for i, allocation := range nodeAllocations {
+		plan.Allocations[i] = Allocation{
 			ID:       types.Int32Value(allocation.ID),
 			IP:       types.StringValue(allocation.IP),
 			Alias:    types.StringValue(allocation.Alias),
 			Port:     types.Int32Value(allocation.Port),
 			Notes:    types.StringValue(allocation.Notes),
 			Assigned: types.BoolValue(allocation.Assigned),
-		})
+		}
 	}
 
 	diags = resp.State.Set(ctx, plan)
@@ -599,15 +601,17 @@ func (r *nodeResource) ImportState(ctx context.Context, req resource.ImportState
 		return
 	}
 
-	for _, allocation := range nodeAllocations {
-		state.Allocations = append(state.Allocations, Allocation{
+	state.Allocations = make([]Allocation, len(nodeAllocations))
+
+	for i, allocation := range nodeAllocations {
+		state.Allocations[i] = Allocation{
 			ID:       types.Int32Value(allocation.ID),
 			IP:       types.StringValue(allocation.IP),
 			Alias:    types.StringValue(allocation.Alias),
 			Port:     types.Int32Value(allocation.Port),
 			Notes:    types.StringValue(allocation.Notes),
 			Assigned: types.BoolValue(allocation.Assigned),
-		})
+		}
 	}
 
 	// Set state to fully populated data
