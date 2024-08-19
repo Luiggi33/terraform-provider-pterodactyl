@@ -96,6 +96,13 @@ func (d *nodeAllocationsDataSource) Schema(ctx context.Context, req datasource.S
 func (d *nodeAllocationsDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	var state nodeAllocationsDataSourceModel
 
+	// Get the attributes from the request
+	diags := req.Config.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	nodes, err := d.client.GetNodeAllocations(state.NodeID)
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -120,7 +127,7 @@ func (d *nodeAllocationsDataSource) Read(ctx context.Context, req datasource.Rea
 	}
 
 	// Set state
-	diags := resp.State.Set(ctx, &state)
+	diags = resp.State.Set(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
