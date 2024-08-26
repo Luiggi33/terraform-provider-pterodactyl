@@ -45,7 +45,7 @@ type nodeDataSourceModel struct {
 	UpdatedAt          types.String `tfsdk:"updated_at"`
 }
 
-// NewUserDataSource is a helper function to simplify the provider implementation.
+// NewNodeDataSource is a helper function to simplify the provider implementation.
 func NewNodeDataSource() datasource.DataSource {
 	return &nodeDataSource{}
 }

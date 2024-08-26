@@ -181,7 +181,7 @@ func (d *nodesDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 		return
 	}
 
-	// sub optimal, but at least somewhat more efficient
+	// suboptimal, but at least somewhat more efficient
 	if state.LocationID.IsNull() {
 		state.Nodes = make([]Node, 0, len(nodes))
 	} else {

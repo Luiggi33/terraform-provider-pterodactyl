@@ -32,7 +32,7 @@ type usersDataSourceModel struct {
 	Users []User `tfsdk:"users"`
 }
 
-// Users schema data.
+// User schema data.
 type User struct {
 	ID         types.Int32  `tfsdk:"id"`
 	ExternalID types.String `tfsdk:"external_id"`
