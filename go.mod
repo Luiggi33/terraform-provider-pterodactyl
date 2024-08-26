@@ -3,7 +3,7 @@ module terraform-provider-pterodactyl
 go 1.21
 
 require (
-	github.com/Luiggi33/pterodactyl-client-go v0.2.0
+	github.com/Luiggi33/pterodactyl-client-go v0.2.1
 	github.com/hashicorp/terraform-plugin-docs v0.19.4
 	github.com/hashicorp/terraform-plugin-framework v1.11.0
 	github.com/hashicorp/terraform-plugin-framework-validators v0.13.0
