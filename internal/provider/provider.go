@@ -178,6 +178,8 @@ func (p *pterodactylProvider) DataSources(_ context.Context) []func() datasource
 		NewNodesDataSource,
 		NewNodeDataSource,
 		NewNodeAllocationsDataSource,
+		// Location related data sources
+		NewLocationDataSource,
 	}
 }
 
@@ -186,5 +188,6 @@ func (p *pterodactylProvider) Resources(_ context.Context) []func() resource.Res
 	return []func() resource.Resource{
 		NewUserResource,
 		NewNodeResource,
+		NewLocationResource,
 	}
 }
