@@ -185,6 +185,9 @@ func (r *nodeResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"created_at": schema.StringAttribute{
 				Description: "The creation date of the node.",
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"updated_at": schema.StringAttribute{
 				Description: "The last update date of the node.",
