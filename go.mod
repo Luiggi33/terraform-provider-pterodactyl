@@ -2,7 +2,7 @@ module terraform-provider-pterodactyl
 
 go 1.22.0
 
-toolchain go1.23.2
+toolchain go1.23.5
 
 require (
 	github.com/Luiggi33/pterodactyl-client-go v0.2.1
